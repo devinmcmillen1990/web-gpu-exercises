@@ -1,13 +1,11 @@
 mod app;
-mod utils;
+mod state;
+use crate::app::App;
 use winit::event_loop::{EventLoop,ControlFlow};
 
-use crate::app::App;
-
 pub fn main() {
-    // utils::list_gpus::list_gpus();
-    
     env_logger::init();
+
     let event_loop = EventLoop::new().unwrap();
     event_loop.set_control_flow(ControlFlow::Poll);
 

@@ -1,4 +1,8 @@
-pub fn list_gpus() {
+pub fn main() {
+    list_gpus();
+}
+
+fn list_gpus() {
     let instance = wgpu::Instance::default();
     
     println!("Found Adapters:");
