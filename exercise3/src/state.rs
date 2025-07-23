@@ -106,13 +106,13 @@ impl State {
         let shader = self.device.create_shader_module(wgpu::include_wgsl!("shader.wgsl"));
 
         let pipeline_layout = self.device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
-            label: Some("Pipeline Layout"),
+            label: None,
             bind_group_layouts: &[],
             push_constant_ranges: &[],
         });
 
         let pipeline = self.device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
-            label: Some("Render Pipeline"),
+            label: None,
             layout: Some(&pipeline_layout),
             vertex: wgpu::VertexState {
                 module: &shader,
@@ -125,7 +125,10 @@ impl State {
                 entry_point: Some("fs_main"),
                 targets: &[Some(wgpu::ColorTargetState {
                     format: self.surface_format,
-                    blend: Some(wgpu::BlendState::REPLACE),
+                    blend: Some(wgpu::BlendState {
+                        color: wgpu::BlendComponent::REPLACE,
+                        alpha: wgpu::BlendComponent::REPLACE,
+                    }),
                     write_mask: wgpu::ColorWrites::ALL,
                 })],
                 compilation_options: Default::default(),
@@ -138,7 +141,7 @@ impl State {
         });
 
         renderpass.set_pipeline(&pipeline);
-        renderpass.draw(0..2, 0..1);
+        renderpass.draw(0..3, 0..1);
 
 
         // End the render pass.
