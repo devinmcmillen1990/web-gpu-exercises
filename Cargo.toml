@@ -5,3 +5,4 @@ edition = "2018"
 
 [dependencies]
 wgpu = "26.0.1"
+winit = "0.30.11"
