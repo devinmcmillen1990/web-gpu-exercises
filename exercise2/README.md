@@ -4,5 +4,6 @@
 - winit
 - env_logger
 ## Objective
-Provide list of available GPUs discoverable by the wgpu library.
-## Sample Output
+Use WGPU and WINIT libraries to open an empty window.
+## Output
+![alt text](.assets/empty_window.png "Empty Window")
