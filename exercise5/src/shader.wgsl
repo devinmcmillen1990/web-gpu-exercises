@@ -5,15 +5,28 @@ struct VOutput{
 
 @vertex
 fn vs_main(@builtin(vertex_index) in_vertex_index: u32) -> VOutput {    
-    var pos = array<vec2<f32>,3>(
-        vec2<f32>(0.0, 0.5),
-        vec2<f32>(-0.5,-0.5),
-        vec2<f32>(0.5,-0.5)
+    var pos : array<vec2<f32>, 9> = array<vec2<f32>, 9>(             
+        vec2<f32>(-0.63,  0.80),
+        vec2<f32>(-0.65,  0.20),
+        vec2<f32>(-0.20,  0.60),
+        vec2<f32>(-0.37, -0.07),
+        vec2<f32>( 0.05,  0.18),
+        vec2<f32>(-0.13, -0.40),
+        vec2<f32>( 0.30, -0.13),
+        vec2<f32>( 0.13, -0.64),
+        vec2<f32>( 0.70, -0.30)     
     );
-    var color = array<vec3<f32>,3>(
-        vec3<f32>(1.0, 0.0, 0.0),
-        vec3<f32>(0.0, 1.0, 0.0),
-        vec3<f32>(0.0, 0.0, 1.0)
+    
+    var color : array<vec3<f32>, 9> = array<vec3<f32>, 9>(             
+        vec3<f32>(1.0, 0.0, 0.0),   // RED
+        vec3<f32>(0.0, 1.0, 0.0),   // GREEN
+        vec3<f32>(0.0, 0.0, 1.0),   // BLUE
+        vec3<f32>(1.0, 0.0, 0.0),   // RED
+        vec3<f32>(0.0, 1.0, 0.0),   // GREEN
+        vec3<f32>(0.0, 0.0, 1.0),   // BLUE
+        vec3<f32>(1.0, 0.0, 0.0),   // RED
+        vec3<f32>(0.0, 1.0, 0.0),   // GREEN
+        vec3<f32>(0.0, 0.0, 1.0),   // BLUE
     );
 
     var out: VOutput;

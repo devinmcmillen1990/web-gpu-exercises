@@ -1,6 +1,8 @@
 use std::sync::Arc;
 use winit::window::Window;
 
+use crate::user_input::UserSelection;
+
 pub struct State {
     window: Arc<Window>,
     device: wgpu::Device,
@@ -8,10 +10,11 @@ pub struct State {
     size:winit::dpi::PhysicalSize<u32>,
     surface: wgpu::Surface<'static>,
     surface_format: wgpu::TextureFormat,
+    topology: wgpu::PrimitiveTopology,
 }
 
 impl State {
-    pub async fn new(window: Arc<Window>) -> State {
+    pub async fn new(window: Arc<Window>, selection: UserSelection) -> State {
         let instance_descriptor = wgpu::InstanceDescriptor::default();
         let instance = wgpu::Instance::new(&instance_descriptor);
         let adapater_options = wgpu::RequestAdapterOptions::default();
@@ -22,6 +25,12 @@ impl State {
         let surface = instance.create_surface(window.clone()).unwrap();
         let capabilities = surface.get_capabilities(&adapter);
         let surface_format = capabilities.formats[0];
+
+        let topology = match selection {
+            UserSelection::TriangleList => wgpu::PrimitiveTopology::TriangleList,
+            UserSelection::TriangleStrip => wgpu::PrimitiveTopology::TriangleStrip,
+            UserSelection::Help => unreachable!(),
+        };
         
         let state = State {
             window,
@@ -30,6 +39,7 @@ impl State {
             size,
             surface,
             surface_format,
+            topology,
         };
 
         state.configure_surface();
@@ -117,7 +127,10 @@ impl State {
                 })],
                 compilation_options: Default::default(),
             }),
-            primitive: wgpu::PrimitiveState::default(),
+            primitive: wgpu::PrimitiveState {
+                topology: self.topology,
+                ..Default::default()
+            },
             depth_stencil: None,
             multisample: wgpu::MultisampleState::default(),
             multiview: None,
@@ -126,9 +139,10 @@ impl State {
 
         renderpass.set_pipeline(&pipeline);
 
-        renderpass.draw(0..3, 0..1);
+        renderpass.draw(0..9, 0..1);
 
         drop(renderpass);
+
         self.queue.submit([encoder.finish()]);
         self.window.pre_present_notify();
         surface_texture.present();

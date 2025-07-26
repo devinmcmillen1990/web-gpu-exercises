@@ -83,12 +83,10 @@ impl State {
 
         let mut encoder = self.device.create_command_encoder(&Default::default());
         
-        // Create the renderpass which will clear the screen
         let color_attachment_operations = wgpu::Operations {
             load: wgpu::LoadOp::Clear(wgpu::Color{ r: 0.5, g:0.5, b: 0.5, a: 1.0,}), // gray
             store: wgpu::StoreOp::Store,
         };
-
 
         let renderpass_descriptor = wgpu::RenderPassDescriptor {
             label: None,
@@ -105,7 +103,6 @@ impl State {
 
         let mut renderpass = encoder.begin_render_pass(&renderpass_descriptor);
 
-        // If you wanted to call any drawing commands, they would go here.
         let shader = self.device.create_shader_module(wgpu::include_wgsl!("shader.wgsl"));
 
         let pipeline_layout = self.device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
@@ -147,13 +144,11 @@ impl State {
         });
 
         renderpass.set_pipeline(&pipeline);
+        
         renderpass.draw(0..6, 0..1);
 
-
-        // End the render pass.
         drop(renderpass);
 
-        // Submit the command in the queue to execute
         self.queue.submit([encoder.finish()]);
         self.window.pre_present_notify();
         surface_texture.present();

@@ -8,7 +8,7 @@
 ## Objective
 The objective of this exercise is to explore WGPU Point-Line, Line-Line and Line-Strip functionality, while providing the user the ability to modify the topology via the command line.
 ## Key Concepts
-- WebGPU Primitives
+- WebGPU Point/Line Primitives
   1. Point-List - Collection of points where each point represents a location in space.
   2. Line-List - Collection of vertices connected via a line.
   3. Line-Strip - Connect verticies sequentially to form a single, continuous polyline.

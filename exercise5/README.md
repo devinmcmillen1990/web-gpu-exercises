@@ -1,4 +1,4 @@
-# Exercise 4 - Point and Line Primitives
+# Exercise 5 - Triangle Primitives
 ## Dependencies
 - wgpu
 - winit
@@ -6,65 +6,13 @@
 - bytemuck
 - pollster
 ## Objective
-The objective of this exercise is to explore WGPU Point-Line, Line-Line and Line-Strip functionality, while providing the user the ability to modify the topology via the command line.
+The objective of this exercise is to explore WGPU Triangle Primitives
 ## Key Concepts
-- WebGPU Primitives
-  1. Point-List - Collection of points where each point represents a location in space.
-  2. Line-List - Collection of vertices connected via a line.
-  3. Line-Strip - Connect verticies sequentially to form a single, continuous polyline.
-- User Input
-- user_input.rs
-```rust
-use std::env;
-
-#[derive(Default, Debug, Clone, Copy)]
-pub enum UserSelection {
-    #[default] Help,
-    PointList,
-    LineList,
-    LineStrip,
-}
-
-pub fn parse_user_input() -> UserSelection {
-    let args: Vec<String> = env::args().collect();
-
-    if args.len() < 2 || args[1] == "help" {
-        print_help();
-        return UserSelection::Help;
-    }
-
-    match args[1].as_str() {
-        "point-list" => UserSelection::PointList,
-        "line-list" => UserSelection::LineList,
-        "line-strip" => UserSelection::LineStrip,
-        _ => {
-            eprintln!("Unknown mode: '{}'", args[1]);
-            print_help();
-            UserSelection::Help
-        }
-    }
-}
-
-fn print_help() {
-    println!("Usage: cargo run -- <mode>");
-    println!("Supported modes:");
-    println!("  point-list   - Render using PointList");
-    println!("  line-list    - Render using LineList");
-    println!("  line-strip   - Render using LineStrip");
-    println!("  help         - Show this help message");
-}
-```
+- WebGPU Triangle Primitives
+  1. Triangle-List - Collection of triangles for every 3 verticies.
+  2. Triangle-Strip - Collection of triangles connected to a base triangle by sequentially adding a new vertex against the closest edge of the previous triangle in the sequence.
 ## Output
-1. Point-List
-- ```cargo run point-list```
-![alt text](.assets/point-list-output.png "Point List Output")
-  * NOTE: This image isn't super valuable because the points are the size of pixels. They may not be visible depending on the resolution.
-2. Line-List
-- ```cargo run line-list```
-![alt text](.assets/line-list-output.png "Line List Output")
-3. Line-Strip
-- ```cargo run line-strip```
-![alt test](.assets/line-strip-output.png "Line Strip Output")
+
 ## Project Notes
 
 ## Code Notes
