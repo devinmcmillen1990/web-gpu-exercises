@@ -1,37 +1,28 @@
 use std::sync::Arc;
 use winit::window::Window;
 
-use crate::user_input::UserSelection;
-
 pub struct State {
     window: Arc<Window>,
     device: wgpu::Device,
     queue: wgpu::Queue,
-    size: winit::dpi::PhysicalSize<u32>,
+    size:winit::dpi::PhysicalSize<u32>,
     surface: wgpu::Surface<'static>,
     surface_format: wgpu::TextureFormat,
-    topology: wgpu::PrimitiveTopology,
 }
 
 impl State {
-    pub async fn new(window: Arc<Window>, selection: UserSelection) -> State {
+    pub async fn new(window: Arc<Window>) -> State {
         let instance_descriptor = wgpu::InstanceDescriptor::default();
         let instance = wgpu::Instance::new(&instance_descriptor);
-        let adapter_options = wgpu::RequestAdapterOptions::default();
-        let adapter = instance.request_adapter(&adapter_options).await.unwrap();
+        let adapater_options = wgpu::RequestAdapterOptions::default();
+        let adapter = instance.request_adapter(&adapater_options).await.unwrap();
         let device_descriptor = wgpu::DeviceDescriptor::default();
         let (device, queue) = adapter.request_device(&device_descriptor).await.unwrap();
         let size = window.inner_size();
         let surface = instance.create_surface(window.clone()).unwrap();
         let capabilities = surface.get_capabilities(&adapter);
         let surface_format = capabilities.formats[0];
-        let topology = match selection {
-                UserSelection::PointList => wgpu::PrimitiveTopology::PointList,
-                UserSelection::LineList => wgpu::PrimitiveTopology::LineList,
-                UserSelection::LineStrip => wgpu::PrimitiveTopology::LineStrip,
-                UserSelection::Help => unreachable!(),
-            };
-
+        
         let state = State {
             window,
             device,
@@ -39,7 +30,6 @@ impl State {
             size,
             surface,
             surface_format,
-            topology,
         };
 
         state.configure_surface();
@@ -55,7 +45,7 @@ impl State {
         let surface_config = wgpu::SurfaceConfiguration {
             usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
             format: self.surface_format,
-            view_formats: vec![ self.surface_format.add_srgb_suffix() ],    // Request compatibility with the sRGB-format texture view we're going to create later.
+            view_formats: vec![ self.surface_format.add_srgb_suffix() ],
             alpha_mode: wgpu::CompositeAlphaMode::Auto,
             width: self.size.width,
             height: self.size.height,
@@ -71,24 +61,18 @@ impl State {
         self.configure_surface();
     }
 
-    pub fn render(&mut self) {
+    pub fn render (&mut self) {
         let surface_texture = self.surface.get_current_texture().expect("failed to acquire next swapchain texture");
-
         let texture_view_descriptor = wgpu::TextureViewDescriptor {
             format: Some(self.surface_format.add_srgb_suffix()),
             ..Default::default()
         };
-
         let texture_view = surface_texture.texture.create_view(&texture_view_descriptor);
-
         let mut encoder = self.device.create_command_encoder(&Default::default());
-        
-        // Create the renderpass which will clear the screen
         let color_attachment_operations = wgpu::Operations {
-            load: wgpu::LoadOp::Clear(wgpu::Color{ r: 0.5, g:0.5, b: 0.5, a: 1.0,}), // gray
+            load: wgpu::LoadOp::Clear(wgpu::Color{ r: 0.5, g: 0.5, b: 0.5, a: 1.0}),
             store: wgpu::StoreOp::Store,
         };
-
 
         let renderpass_descriptor = wgpu::RenderPassDescriptor {
             label: None,
@@ -105,16 +89,13 @@ impl State {
 
         let mut renderpass = encoder.begin_render_pass(&renderpass_descriptor);
 
-        // If you wanted to call any drawing commands, they would go here.
         let shader = self.device.create_shader_module(wgpu::include_wgsl!("shader.wgsl"));
-
         let pipeline_layout = self.device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
             label: None,
             bind_group_layouts: &[],
             push_constant_ranges: &[],
         });
-
-        let pipeline = self.device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+        let pipeline = self.device.create_render_pipeline(&wgpu::RenderPipelineDescriptor{
             label: None,
             layout: Some(&pipeline_layout),
             vertex: wgpu::VertexState {
@@ -123,7 +104,7 @@ impl State {
                 buffers: &[],
                 compilation_options: Default::default(),
             },
-            fragment: Some(wgpu::FragmentState{ 
+            fragment: Some(wgpu:: FragmentState {
                 module: &shader,
                 entry_point: Some("fs_main"),
                 targets: &[Some(wgpu::ColorTargetState {
@@ -136,10 +117,7 @@ impl State {
                 })],
                 compilation_options: Default::default(),
             }),
-            primitive: wgpu::PrimitiveState {
-                topology: self.topology,
-                ..Default::default()
-            },
+            primitive: wgpu::PrimitiveState::default(),
             depth_stencil: None,
             multisample: wgpu::MultisampleState::default(),
             multiview: None,
@@ -147,13 +125,10 @@ impl State {
         });
 
         renderpass.set_pipeline(&pipeline);
-        renderpass.draw(0..6, 0..1);
 
+        renderpass.draw(0..3, 0..1);
 
-        // End the render pass.
         drop(renderpass);
-
-        // Submit the command in the queue to execute
         self.queue.submit([encoder.finish()]);
         self.window.pre_present_notify();
         surface_texture.present();

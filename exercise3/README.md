@@ -9,6 +9,9 @@
 Use WGPU and WINIT to generate a multi-colored triangle exploring shaders.
 ## Output
 ![alt text](.assets/colorful_triangle.png "Colorful Triangle")
+## Project Notes
+- Introduced state.rs to help manage window rendering for the ApplicationHandler.
+- Introduced shader.wgsl to start with vertex and fragment shading.
 ## Code Notes
 1. Background color gray
 ```rust
