@@ -1,4 +1,4 @@
-# Exercise 4 - Point and Line Primitives
+# Exercise 4 - Point/Line List and Strip Primitives
 ## Dependencies
 - wgpu
 - winit
@@ -120,6 +120,6 @@ let pipeline = self.device.create_render_pipeline(&wgpu::RenderPipelineDescripto
 
 ```rust
 // src.state.rs - lina 157
-// Update renderpass.draww() to include the 6 vertexes.
+// Update renderpass.draw() to include the 6 vertexes.
 renderpass.draw(0..6, 0..1);
 ```
