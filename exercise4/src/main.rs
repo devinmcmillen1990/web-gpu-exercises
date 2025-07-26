@@ -1,6 +1,8 @@
 mod state;
+mod user_input;
 
 use crate::state::State;
+use crate::user_input::{UserSelection, parse_user_input};
 
 use std::sync::Arc;
 use winit::{
@@ -13,12 +15,14 @@ use winit::{
 #[derive(Default)]
 struct App {
     state: Option<State>,
+    user_selection: UserSelection,
 }
 
 impl ApplicationHandler for App {
     fn resumed(&mut self, event_loop: &ActiveEventLoop) {
         let window = Arc::new(event_loop.create_window(Window::default_attributes()).unwrap());
-        let state = pollster::block_on(State::new(window.clone()));
+        let user_selection = self.user_selection;
+        let state = pollster::block_on(State::new(window.clone(), user_selection));
         self.state = Some(state);
         window.request_redraw();
     }
@@ -48,6 +52,12 @@ pub fn main() {
     let event_loop = EventLoop::new().unwrap();
     event_loop.set_control_flow(ControlFlow::Poll);
 
-    let mut app = App::default();
+    let user_input_selection = parse_user_input();
+
+    let mut app = App {
+        user_selection: user_input_selection,
+        ..Default::default()
+    };
+
     event_loop.run_app(&mut app).unwrap();
 }
