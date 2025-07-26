@@ -68,6 +68,7 @@ fn print_help() {
 ## Project Notes
 - Consolidated app.rs and main.rs into main.rs
 ## Code Notes
+- Adding topology as an attribute to State.
 ```rust
 // src/state.rs - line 6
 // Pass user selected Topology into the State
@@ -82,6 +83,7 @@ pub struct State {
 }
 ```
 
+- Implementing user-selected topology
 ```rust
 // src/state.rs - line
 // Apply user selected topology to the Render Pass Pipeline
@@ -118,8 +120,49 @@ let pipeline = self.device.create_render_pipeline(&wgpu::RenderPipelineDescripto
 });
 ```
 
+- Update ```renderpass.draw()``` method for the 6 verticies that are in the shader.wgsl
 ```rust
-// src.state.rs - lina 157
-// Update renderpass.draw() to include the 6 vertexes.
+// src/state.rs - lina 157
+// Update renderpass.draw() to include the 6 verticies.
 renderpass.draw(0..6, 0..1);
+```
+
+- New ```src/shader.wgsl``` 
+```glsl
+// src/shader.wgsl
+struct VOutput {
+    @builtin(position) position: vec4<f32>,
+    @location(0) v_color: vec4<f32>,
+};
+
+@vertex
+fn vs_main(@builtin(vertex_index) in_vertex_index: u32) -> VOutput {
+    var pos = array<vec2<f32>, 6>(
+        vec2<f32>(-0.9,  0.9),
+        vec2<f32>(-0.5,  0.1),
+        vec2<f32>( 0.0,  0.5),
+        vec2<f32>( 0.3, -0.3),
+        vec2<f32>( 0.7,  0.6),
+        vec2<f32>( 0.9, -0.7),
+    );
+
+    var color = array<vec3<f32>, 6>(
+        vec3<f32>(1.0, 0.0, 0.0),
+        vec3<f32>(0.0, 1.0, 0.0),
+        vec3<f32>(0.0, 0.0, 1.0),
+        vec3<f32>(1.0, 1.0, 0.0),
+        vec3<f32>(1.0, 0.0, 1.0),
+        vec3<f32>(0.0, 1.0, 1.0),
+    );
+
+    var out: VOutput;
+    out.position = vec4<f32>(pos[in_vertex_index], 0.0, 1.0);
+    out.v_color = vec4<f32>(1.0, 1.0, 0.0, 1.0); // yellow
+    return out;
+}
+
+@fragment
+fn fs_main(input: VOutput) -> @location(0) vec4<f32> {
+    return input.v_color;
+}
 ```
