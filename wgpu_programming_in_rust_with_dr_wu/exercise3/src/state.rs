@@ -77,7 +77,6 @@ impl State {
 
         let texture_view = surface_texture.texture.create_view(&texture_view_descriptor);
 
-        // Renders a GREEN screen
         let mut encoder = self.device.create_command_encoder(&Default::default());
         
         // Create the renderpass which will clear the screen
