@@ -117,12 +117,12 @@ impl State {
         {
             let renderpass_descriptor = wgpu::RenderPassDescriptor {
                 label: Some("Render Pass"),
-                color_attachments: &[Some(wgpu::RenderPassColorAttachment {
-                    view: &view,
-                    resolve_target: None,
-                    ops: wgpu::Operations {
-                        load: wgpu::LoadOp::Clear(wgpu::Color { r: 0.1, g: 0.2, b: 0.3, a: 1.0, }),
-                        store: wgpu::StoreOp::Store,
+                color_attachments: &[Some(wgpu::RenderPassColorAttachment {                             // describe where we are going to draw our color to.
+                    view: &view,                                                                        // informs wgpu what texture to save the colors to
+                    resolve_target: None,                                                               // the texture that will receive the resolved output. This will be the same as view unless multisampling is enabled.
+                    ops: wgpu::Operations {                                                             // tells wgpu what to do with the colors on the screen (specified by view)
+                        load: wgpu::LoadOp::Clear(wgpu::Color { r: 0.1, g: 0.2, b: 0.3, a: 1.0, }),     // tells wgpu how to handle colors stored from the previous frame
+                        store: wgpu::StoreOp::Store,                                                    // tells wgpu whether we want to store the rendered results to the Texture behind our TextureView (in this case, it's the SurfaceTexture). We use StoreOp::Store as we do want to store our render results
                     },
                     depth_slice: None,
                 })],
