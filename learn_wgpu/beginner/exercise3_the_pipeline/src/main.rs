@@ -16,6 +16,6 @@ fn run() -> anyhow::Result<()> {
     event_loop.set_control_flow(ControlFlow::Poll);
 
     let mut app = App::default();
-    event_loop.run_app(&mut app);
+    let _ = event_loop.run_app(&mut app);
     Ok(())
 }
