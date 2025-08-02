@@ -97,7 +97,7 @@ impl State {
                 alpha_to_coverage_enabled: false,                           // has to do with anti-aliasing
             },
             multiview: None,                                                // indicates how many array layers the render attachments can have
-            cache: None,  
+            cache: None,                                                    // allows wgpu to cache shader compilation data
         });
 
         Ok(Self {
@@ -147,7 +147,7 @@ impl State {
         {
             let renderpass_descriptor = wgpu::RenderPassDescriptor {
                 label: Some("Render Pass"),
-                color_attachments: &[Some(wgpu::RenderPassColorAttachment {
+                color_attachments: &[Some(wgpu::RenderPassColorAttachment {     // This is what @location(0) in the fragment shader targets
                     view: &view,
                     resolve_target: None,
                     ops: wgpu::Operations {
