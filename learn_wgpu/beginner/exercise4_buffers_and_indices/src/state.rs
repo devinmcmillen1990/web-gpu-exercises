@@ -4,7 +4,7 @@ use winit::keyboard::KeyCode;
 use winit::window::Window;
 use wgpu::util::DeviceExt;
 
-use crate::vertex::{Vertex, VERTICES};
+use crate::vertex::{Vertex, VERTICES, INDICES, };
 
 pub struct State {
     pub window: Arc<Window>,
@@ -16,6 +16,8 @@ pub struct State {
     render_pipeline: wgpu::RenderPipeline,
     vertex_buffer: wgpu::Buffer,            // Add the vertex buffer storing our vertex data in the State
     num_vertices: u32,                      // Holds the number of vertices stored in the buffer
+    index_buffer: wgpu::Buffer,
+    num_indices: u32,
 }
 
 impl State {
@@ -67,7 +69,17 @@ impl State {
             }
         );
 
+        // NEW - Create Index buffer from the device
+        let index_buffer = device.create_buffer_init(
+            &wgpu::util::BufferInitDescriptor {
+                label: Some("Index Buffer"),
+                contents: bytemuck::cast_slice(INDICES),
+                usage: wgpu::BufferUsages::INDEX,
+            }
+        );
+
         let num_vertices = VERTICES.len() as u32;
+        let num_indices = INDICES.len() as u32;
         
         let render_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
             label: Some("Render Pipeline"),
@@ -117,6 +129,8 @@ impl State {
             render_pipeline,
             vertex_buffer,
             num_vertices,
+            index_buffer,
+            num_indices,
         })
     }
 
@@ -180,10 +194,19 @@ impl State {
                 self.vertex_buffer.slice(..)        // this is the slice of the buffer to use (You can store as many objects in a buffer as your hardware allows, so slice allows us to specify which portion of the buffer to use). use .. to specify the entire buffer
             );
 
+            // Need to set the index buffer (NOTE: You can only have one index buffer set at a time)
+            renderpass.set_index_buffer(
+                self.index_buffer.slice(..),
+                wgpu::IndexFormat::Uint16
+            );
+
             renderpass.draw(
                 0..self.num_vertices, 
                 0..1
             );
+
+            // When using an index buffer, you need to use draw_indexed. The draw method ignores the index buffer
+            renderpass.draw_indexed(0..self.num_indices, 0, 0..1);
 
             renderpass.draw(0..3, 0..1);
         }

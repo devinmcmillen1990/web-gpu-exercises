@@ -1,7 +1,7 @@
 # Exercise 4 - Buffers and Indices
 * Source Material - [Learn WGPU - Buffers and Indices](https://sotrh.github.io/learn-wgpu/beginner/tutorial4-buffer/#we-re-finally-talking-about-them)
 ## Concepts
-- Buffers
+- Buffers (Vertex and Index)
 - bytemuck
 # Overview
 ## Buffers
