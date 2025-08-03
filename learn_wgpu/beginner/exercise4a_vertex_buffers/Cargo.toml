@@ -1,5 +1,5 @@
 [package]
-name = "exercise4_buffers_and_indices"
+name = "exercise4a_vertex_buffers"
 version = "0.1.0"
 edition = "2018"
 

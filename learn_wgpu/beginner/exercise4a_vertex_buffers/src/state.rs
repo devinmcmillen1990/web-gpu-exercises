@@ -1,7 +1,10 @@
 use std::sync::Arc;
+use wgpu::util::DeviceExt;                  // Used to access the create_buffer_init method on wgpu::Device
 use winit::event_loop::ActiveEventLoop;
 use winit::keyboard::KeyCode;
 use winit::window::Window;
+
+use crate::vertex::{Vertex, VERTICES, };
 
 pub struct State {
     pub window: Arc<Window>,
@@ -11,6 +14,8 @@ pub struct State {
     config: wgpu::SurfaceConfiguration,
     is_surface_configured: bool,
     render_pipeline: wgpu::RenderPipeline,
+    vertex_buffer: wgpu::Buffer,
+    num_vertices: u32,
 }
 
 impl State {
@@ -52,13 +57,21 @@ impl State {
             push_constant_ranges: &[],
         };
         let render_pipeline_layout = device.create_pipeline_layout(&pipeline_layout_descriptor);
+
+        // NEW - Create the vertex buffer
+        let vertex_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+            label: Some("Vertex Buffer"),
+            contents: bytemuck::cast_slice(VERTICES),
+            usage: wgpu::BufferUsages::VERTEX,
+        });
+
         let render_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
             label: Some("Render Pipeline"),
             layout: Some(&render_pipeline_layout),
             vertex: wgpu::VertexState {
                 module: &shader,
                 entry_point: Some("vs_main"),
-                buffers: &[],
+                buffers: &[Vertex::desc()],
                 compilation_options: wgpu::PipelineCompilationOptions::default(),
             },
             fragment: Some(wgpu::FragmentState {
@@ -98,6 +111,8 @@ impl State {
             config,
             is_surface_configured: false,
             render_pipeline,
+            vertex_buffer,
+            num_vertices: VERTICES.len() as u32,
         })
     }
 
@@ -154,6 +169,16 @@ impl State {
             let mut renderpass = encoder.begin_render_pass(&renderpass_descriptor);
 
             renderpass.set_pipeline(&self.render_pipeline);
+
+            // set the vertex buffer in the render method
+            renderpass.set_vertex_buffer(
+                0,                              // what buffer slot to use for this vertex buffer (You can have multiple vertex buffers set at a time)
+                self.vertex_buffer.slice(..)    // is the slice of the buffer to use (We use .. to specify the entire buffer)
+            );
+
+            // use the vertex buffer in a draw call
+            renderpass.draw(0..self.num_vertices, 0..1);
+
             renderpass.draw(0..3, 0..1);
         }
 
