@@ -1,4 +1,4 @@
-# Exercise 2 - The Surface
+# Exercise 3 - The Pipeline
 * Source Material - [Learn WGPU - The Pipeline](https://sotrh.github.io/learn-wgpu/beginner/tutorial3-pipeline/#what-s-a-pipeline)
 ## Concepts
 - The Pipeline
