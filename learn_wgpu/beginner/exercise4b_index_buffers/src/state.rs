@@ -4,7 +4,7 @@ use winit::event_loop::ActiveEventLoop;
 use winit::keyboard::KeyCode;
 use winit::window::Window;
 
-use crate::vertex::{Vertex, VERTICES, };
+use crate::vertex::{Vertex, VERTICES, INDICES, };
 
 pub struct State {
     pub window: Arc<Window>,
@@ -16,6 +16,8 @@ pub struct State {
     render_pipeline: wgpu::RenderPipeline,
     vertex_buffer: wgpu::Buffer,
     num_vertices: u32,
+    index_buffer: wgpu::Buffer,
+    num_indices: u32,
 }
 
 impl State {
@@ -62,6 +64,14 @@ impl State {
             contents: bytemuck::cast_slice(VERTICES),
             usage: wgpu::BufferUsages::VERTEX,
         });
+
+        // NEW - Index Buffer
+        let index_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+            label: Some("Index Buffer"),
+            contents: bytemuck::cast_slice(INDICES),
+            usage: wgpu::BufferUsages::INDEX,
+        });
+
         let render_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
             label: Some("Render Pipeline"),
             layout: Some(&render_pipeline_layout),
@@ -110,6 +120,8 @@ impl State {
             render_pipeline,
             vertex_buffer,
             num_vertices: VERTICES.len() as u32,
+            index_buffer,
+            num_indices: INDICES.len() as u32,
         })
     }
 
@@ -167,6 +179,19 @@ impl State {
 
             renderpass.set_pipeline(&self.render_pipeline);
             renderpass.set_vertex_buffer(0, self.vertex_buffer.slice(..));
+
+            renderpass.set_index_buffer(
+                self.index_buffer.slice(..), 
+                wgpu::IndexFormat::Uint16
+            );
+
+            // When using an index buffer, you need to use draw_indexed because the draw method ignores the index buffer
+            renderpass.draw_indexed(
+                0..self.num_indices, 
+                0, 
+                0..1
+            );
+
             renderpass.draw(0..self.num_vertices, 0..1);
             renderpass.draw(0..3, 0..1);
         }
