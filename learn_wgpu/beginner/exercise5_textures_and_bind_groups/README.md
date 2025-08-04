@@ -3,8 +3,17 @@
 ## Objective
 
 ## Concepts
-
+- Textures
+- Image File Loading
 # Overview
+## Textures
+Textures are images overlaid on a triangle mesh to make it seem more detailed.
+
+There are multiple types of textures, such as:
+- normal maps,
+- bump maps,
+- specular maps, and
+- diffuse maps
 
 # Dependencies
 ```rust
