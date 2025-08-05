@@ -53,6 +53,8 @@ impl State {
             trace: wgpu::Trace::Off,
         };
         let (device, queue) = adapter.request_device(&device_descriptor).await?;
+
+        // Surface
         let surface_capabilities = surface.get_capabilities(&adapter);
         let surface_format = surface_capabilities.formats[0];
         let config = wgpu::SurfaceConfiguration {
@@ -65,6 +67,8 @@ impl State {
             view_formats: vec![],
             desired_maximum_frame_latency: 2,
         };
+
+        // Texture
         let diffuse_bytes = include_bytes!("../.assets/happy-tree.png");
         let diffuse_texture = Texture::from_bytes(&device, &queue, diffuse_bytes, "happy-tree.png").unwrap();
         let bind_group_layout_descriptor = wgpu::BindGroupLayoutDescriptor {
@@ -106,6 +110,8 @@ impl State {
             label: Some("diffuse_bind_group"),
         };
         let diffuse_bind_group = device.create_bind_group(&diffuse_bind_group_descriptor);
+
+        // Camera
         let camera = Camera {
             eye: (0.0, 1.0, 2.0).into(),
             target: (0.0, 0.0, 0.0).into(),
@@ -150,6 +156,8 @@ impl State {
         };
         let camera_bind_group = device.create_bind_group(&camera_bind_group_descriptor);
         let camera_controller = CameraController::new(0.2);
+
+        // Pipeline
         let shader = device.create_shader_module(wgpu::include_wgsl!("shader.wgsl"));
         let pipeline_layout_descriptor = wgpu::PipelineLayoutDescriptor {
             label: Some("Render Pipeline Layout"),
