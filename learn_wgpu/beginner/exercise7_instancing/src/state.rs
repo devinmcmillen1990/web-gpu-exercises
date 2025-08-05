@@ -1,3 +1,4 @@
+use cgmath::prelude::*;
 use std::sync::Arc;
 use wgpu::util::DeviceExt;
 use winit::event::WindowEvent;
@@ -6,8 +7,9 @@ use winit::keyboard::KeyCode;
 use winit::window::Window;
 
 use crate::camera::{Camera, CameraUniform, CameraController, };
-use crate::vertex::{Vertex, VERTICES, INDICES, };
+use crate::instance::{Instance, InstanceRaw, };
 use crate::texture::Texture;
+use crate::vertex::{Vertex, VERTICES, INDICES, };
 
 pub struct State {
     pub window: Arc<Window>,
@@ -29,6 +31,9 @@ pub struct State {
     camera_buffer: wgpu::Buffer,
     camera_bind_group: wgpu::BindGroup,
     camera_controller: CameraController,
+
+    instances: Vec<Instance>,
+    instance_buffer: wgpu::Buffer,
 }
 
 impl State {
@@ -53,6 +58,8 @@ impl State {
             trace: wgpu::Trace::Off,
         };
         let (device, queue) = adapter.request_device(&device_descriptor).await?;
+
+        // Surface
         let surface_capabilities = surface.get_capabilities(&adapter);
         let surface_format = surface_capabilities.formats[0];
         let config = wgpu::SurfaceConfiguration {
@@ -65,6 +72,8 @@ impl State {
             view_formats: vec![],
             desired_maximum_frame_latency: 2,
         };
+
+        // Texture
         let diffuse_bytes = include_bytes!("../.assets/happy-tree.png");
         let diffuse_texture = Texture::from_bytes(&device, &queue, diffuse_bytes, "happy-tree.png").unwrap();
         let bind_group_layout_descriptor = wgpu::BindGroupLayoutDescriptor {
@@ -106,6 +115,8 @@ impl State {
             label: Some("diffuse_bind_group"),
         };
         let diffuse_bind_group = device.create_bind_group(&diffuse_bind_group_descriptor);
+
+        // Camera
         let camera = Camera {
             eye: (0.0, 1.0, 2.0).into(),
             target: (0.0, 0.0, 0.0).into(),
@@ -150,6 +161,41 @@ impl State {
         };
         let camera_bind_group = device.create_bind_group(&camera_bind_group_descriptor);
         let camera_controller = CameraController::new(0.2);
+
+        // Instancing
+        let num_instances_per_row: u32 = 10;
+
+        let instance_displacement: cgmath::Vector3<f32> = cgmath::Vector3::new(
+            num_instances_per_row as f32 * 0.5, 
+            0.0, 
+            num_instances_per_row as f32 * 0.5
+        );
+
+        let instances = (0..num_instances_per_row).flat_map(|z| {
+            (0..num_instances_per_row).map(move |x| {
+                let position = cgmath::Vector3 { x: x as f32, y: 0.0, z: z as f32, } - instance_displacement;
+                let rotation = if position.is_zero() {
+                    cgmath::Quaternion::from_axis_angle(cgmath::Vector3::unit_z(), cgmath::Deg(0.0))
+                } else {
+                    cgmath::Quaternion::from_axis_angle(position.normalize(), cgmath::Deg(45.0))
+                };
+
+                Instance {
+                    position,
+                    rotation,
+                }
+            })
+        }).collect::<Vec<_>>();
+
+        let instance_data = instances.iter().map(Instance::to_raw).collect::<Vec<_>>();
+        let instance_buffer_descriptor = wgpu::util::BufferInitDescriptor {
+            label: Some("Instance Buffer"),
+            contents: bytemuck::cast_slice(&instance_data),
+            usage: wgpu::BufferUsages::VERTEX,
+        };
+        let instance_buffer = device.create_buffer_init(&instance_buffer_descriptor);
+
+        // Pipeline
         let shader = device.create_shader_module(wgpu::include_wgsl!("shader.wgsl"));
         let pipeline_layout_descriptor = wgpu::PipelineLayoutDescriptor {
             label: Some("Render Pipeline Layout"),
@@ -176,7 +222,10 @@ impl State {
             vertex: wgpu::VertexState {
                 module: &shader,
                 entry_point: Some("vs_main"),
-                buffers: &[Vertex::desc()],
+                buffers: &[
+                    Vertex::desc(),
+                    InstanceRaw::desc(),            // add buffer layout to the render pipeline so that we can use it when we render.
+                ],
                 compilation_options: Default::default(),
             },
             fragment: Some(wgpu::FragmentState {
@@ -229,6 +278,8 @@ impl State {
             camera_buffer,
             camera_bind_group,
             camera_controller,
+            instances,
+            instance_buffer,
         })
     }
 
@@ -300,8 +351,17 @@ impl State {
             renderpass.set_bind_group(0, &self.diffuse_bind_group, &[]);
             renderpass.set_bind_group(1, &self.camera_bind_group, &[]);
             renderpass.set_vertex_buffer(0, self.vertex_buffer.slice(..));
+
+            // NEW
+            renderpass.set_vertex_buffer(1, self.instance_buffer.slice(..));
+
             renderpass.set_index_buffer(self.index_buffer.slice(..), wgpu::IndexFormat::Uint16);
-            renderpass.draw_indexed(0..self.num_indices, 0, 0..1);
+
+            renderpass.draw_indexed(
+                0..self.num_indices,
+                0,
+                0..self.instances.len() as _    // UPDATED
+            );
         }
 
         self.queue.submit(std::iter::once(encoder.finish()));
