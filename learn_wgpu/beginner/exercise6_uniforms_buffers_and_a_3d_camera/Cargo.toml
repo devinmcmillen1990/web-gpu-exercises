@@ -1,0 +1,19 @@
+[package]
+name = "exercise5_textures_and_bind_groups"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+anyhow = "1.0"
+winit = "0.30.12"
+env_logger = "0.11.8"
+log = "0.4"
+wgpu = "26.0.1"
+pollster = "0.4.0"
+bytemuck = { version = "1.23.1", features = [ "derive" ] }
+cgmath = "0.18"
+
+[dependencies.image]
+version = "0.25.6"
+default-features = false
+features = ["png", "jpeg"]

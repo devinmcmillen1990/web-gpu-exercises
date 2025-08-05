@@ -1,9 +1,10 @@
 use std::sync::Arc;
 use winit::application::ApplicationHandler;
-use winit::event::{KeyEvent, WindowEvent};
+use winit::event::{KeyEvent, WindowEvent, };
 use winit::event_loop::ActiveEventLoop;
 use winit::keyboard::PhysicalKey;
-use winit::window::{Window, WindowId};
+use winit::window::{Window, WindowId, };
+use wgpu::SurfaceError;
 
 use crate::state::State;
 
@@ -23,6 +24,11 @@ impl ApplicationHandler for App {
     fn window_event(&mut self, event_loop: &ActiveEventLoop, _id: WindowId, event: WindowEvent) {
         let state = self.state.as_mut().unwrap();
 
+        if state.input(&event) {
+            // return early if input was handled (e.g., camera keys)
+            return;
+        }
+
         match event {
             WindowEvent::CloseRequested => {
                 event_loop.exit();
@@ -31,9 +37,11 @@ impl ApplicationHandler for App {
                 state.resize(size.width, size.height);
             },
             WindowEvent::RedrawRequested => {
+                state.update();
+                
                 match state.render() {
                     Ok(_) => {},
-                    Err(wgpu::SurfaceError::Lost | wgpu::SurfaceError::Outdated) => {
+                    Err(SurfaceError::Lost | SurfaceError::Outdated) => {
                         let size = state.window.inner_size();
                         state.resize(size.width, size.height);
                     },

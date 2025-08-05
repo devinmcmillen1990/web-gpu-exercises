@@ -1,9 +1,9 @@
 use std::sync::Arc;
 use winit::application::ApplicationHandler;
-use winit::event::{KeyEvent, WindowEvent};
+use winit::event::{KeyEvent, WindowEvent, };
 use winit::event_loop::ActiveEventLoop;
 use winit::keyboard::PhysicalKey;
-use winit::window::{Window, WindowId};
+use winit::window::{Window, WindowId, };
 
 use crate::state::State;
 
