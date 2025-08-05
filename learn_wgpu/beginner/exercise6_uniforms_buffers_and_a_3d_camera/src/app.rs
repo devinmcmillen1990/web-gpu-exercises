@@ -24,6 +24,11 @@ impl ApplicationHandler for App {
     fn window_event(&mut self, event_loop: &ActiveEventLoop, _id: WindowId, event: WindowEvent) {
         let state = self.state.as_mut().unwrap();
 
+        if state.input(&event) {
+            // return early if input was handled (e.g., camera keys)
+            return;
+        }
+
         match event {
             WindowEvent::CloseRequested => {
                 event_loop.exit();
@@ -32,6 +37,8 @@ impl ApplicationHandler for App {
                 state.resize(size.width, size.height);
             },
             WindowEvent::RedrawRequested => {
+                state.update();
+                
                 match state.render() {
                     Ok(_) => {},
                     Err(SurfaceError::Lost | SurfaceError::Outdated) => {

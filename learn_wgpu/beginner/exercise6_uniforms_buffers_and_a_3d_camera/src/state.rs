@@ -1,10 +1,11 @@
 use std::sync::Arc;
 use wgpu::util::DeviceExt;
+use winit::event::WindowEvent;
 use winit::event_loop::ActiveEventLoop;
 use winit::keyboard::KeyCode;
 use winit::window::Window;
 
-use crate::camera::{Camera, CameraUniform, };
+use crate::camera::{Camera, CameraUniform, CameraController, };
 use crate::vertex::{Vertex, VERTICES, INDICES, };
 use crate::texture::Texture;
 
@@ -27,6 +28,7 @@ pub struct State {
     camera_uniform: CameraUniform,
     camera_buffer: wgpu::Buffer,
     camera_bind_group: wgpu::BindGroup,
+    camera_controller: CameraController,
 }
 
 impl State {
@@ -156,6 +158,8 @@ impl State {
 
         let camera_bind_group = device.create_bind_group(&camera_bind_group_descriptor);
 
+        let camera_controller = CameraController::new(0.2);
+
         let shader = device.create_shader_module(wgpu::include_wgsl!("shader.wgsl"));
         let pipeline_layout_descriptor = wgpu::PipelineLayoutDescriptor {
             label: Some("Render Pipeline Layout"),
@@ -235,6 +239,7 @@ impl State {
             camera_uniform,
             camera_buffer,
             camera_bind_group,
+            camera_controller,
         })
     } 
     
@@ -245,6 +250,16 @@ impl State {
             self.surface.configure(&self.device, &self.config);
             self.is_surface_configured = true;
         }
+    }
+
+    pub fn input(&mut self, event: &WindowEvent) -> bool {
+        self.camera_controller.process_event(event)
+    }
+
+    pub fn update(&mut self) {
+        self.camera_controller.update_camera(&mut self.camera);
+        self.camera_uniform.update_view_proj(&self.camera);
+        self.queue.write_buffer(&self.camera_buffer, 0, bytemuck::cast_slice(&[self.camera_uniform]));
     }
 
     pub fn handle_key(&self, event_loop: &ActiveEventLoop, code: KeyCode, is_pressed: bool) {
@@ -279,7 +294,7 @@ impl State {
                     resolve_target: None,
                     ops: wgpu::Operations {
                         load: wgpu::LoadOp::Clear(
-                            wgpu::Color { r: 0.1, g: 0.2, b: 0.1, a: 1.0, }
+                            wgpu::Color { r: 0.1, g: 0.2, b: 0.3, a: 1.0, }
                         ),
                         store: wgpu::StoreOp::Store,
                     },
