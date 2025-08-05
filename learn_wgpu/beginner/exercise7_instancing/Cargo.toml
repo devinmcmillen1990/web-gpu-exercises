@@ -1,5 +1,5 @@
 [package]
-name = "exercise6_uniform_buffers_and_a_3d_camera"
+name = "exercise7_instancing"
 version = "0.1.0"
 edition = "2018"
 
