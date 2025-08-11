@@ -1,6 +1,8 @@
 # Exercise 1 - Dependencies and the Window
 [Learn WGPU - Dependencies and the Window](https://sotrh.github.io/learn-wgpu/beginner/tutorial1-window/)
+
 [Learn WGPU - Tutorial 1](https://github.com/sotrh/learn-wgpu/tree/master/code/beginner/tutorial1-window/)
+
 # Dependencies
 We will require the following Cargo dependencies:
 ```toml
