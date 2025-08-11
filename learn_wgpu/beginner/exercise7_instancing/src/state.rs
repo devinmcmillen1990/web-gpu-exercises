@@ -163,7 +163,7 @@ impl State {
         let camera_controller = CameraController::new(0.2);
 
         // Instancing
-        let num_instances_per_row: u32 = 10;
+        let num_instances_per_row: u32 = 100;
 
         let instance_displacement: cgmath::Vector3<f32> = cgmath::Vector3::new(
             num_instances_per_row as f32 * 0.5, 
