@@ -1,5 +1,6 @@
 # Exercise 1 - Dependencies and the Window
-Here is the code from the [Learn WGPU Repository](https://github.com/sotrh/learn-wgpu/tree/master/code/beginner/tutorial1-window/)
+[Learn WGPU - Dependencies and the Window](https://sotrh.github.io/learn-wgpu/beginner/tutorial1-window/)
+[Learn WGPU - Tutorial 1](https://github.com/sotrh/learn-wgpu/tree/master/code/beginner/tutorial1-window/)
 # Dependencies
 We will require the following Cargo dependencies:
 ```toml
@@ -28,3 +29,5 @@ We will use our App Struct to enable communication between the State and winit. 
 # Demo
 Executing a ```cargo build | cargo run``` will run the application rendering a blank window as seen below.
 ![alt text](.assets/ex1_final_output.png "Demo Final Output - Blank Window")
+
+You can either close the window with the close button on the top right corner, or with the ESCAPE key.

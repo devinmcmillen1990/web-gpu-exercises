@@ -20,7 +20,7 @@ impl State {
     }
 
     pub fn handle_key(&self, event_loop: &ActiveEventLoop, code: KeyCode, is_pressed: bool) {
-        match (code, is_pressed) {
+        match(code, is_pressed) {
             (KeyCode::Escape, true) => {
                 event_loop.exit();
             },
@@ -28,8 +28,6 @@ impl State {
         }
     }
 
-    // we ask the window to draw another frame as soon as possible as winit only draws one frame unless the window 
-    // is resized or we request it to draw another one.
     pub fn render(&mut self) -> Result<(), SurfaceError> {
         self.window.request_redraw();
         Ok(())
