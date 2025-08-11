@@ -73,11 +73,14 @@ WindowEvent::CursorMoved { position, .. } => {
 # Results
 As you move the cursor around the screen you should see it fade between colors depending on how you have the hande_mouse_move computation. Play around with it and see what else you can come up with.
 
-* Cursor Top-Left
+### Cursor Top-Left
 ![alt text](.assets/cursor_top_left_final_output.png "Cursor Top Left")
-* Cursor Top-Right
+
+### Cursor Top-Right
 ![alt text](.assets/cursor_top_right_final_output.png "Cursor Top Right")
-* Cursor Bottom-Left
+
+### Cursor Bottom-Left
 ![alt text](.assets/cursor_bottom_left_final_output.png "Cursor Bottom Left")
-* Cursor Bottom-Right
+
+### Cursor Bottom-Right
 ![alt text](.assets/cursor_bottom_right_final_output.png "Cursor Bottom Right")
