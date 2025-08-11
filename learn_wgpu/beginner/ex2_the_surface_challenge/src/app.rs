@@ -43,6 +43,10 @@ impl ApplicationHandler for App {
                     },
                 }
             },
+            // Pass the cursor position to the State's handle_mouse_move method.
+            WindowEvent::CursorMoved { position, .. } => {
+                state.handle_mouse_move(position.x, position.y);
+            },
             WindowEvent::KeyboardInput {
                 event: KeyEvent {
                     physical_key: PhysicalKey::Code(code),

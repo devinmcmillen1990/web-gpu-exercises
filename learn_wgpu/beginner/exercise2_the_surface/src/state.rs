@@ -36,7 +36,7 @@ impl State {
         let device_descriptor = wgpu::DeviceDescriptor {
             label: None,
             required_features: wgpu::Features::empty(),     // allows us to specify what extra features we want. https://docs.rs/wgpu/latest/wgpu/struct.Features.html
-            required_limits: wgpu::Limits::default(),       // describes the limit of certain types of resources that we can creat
+            required_limits: wgpu::Limits::default(),       // describes the limit of certain types of resources that we can create
             memory_hints: Default::default(),               // provides the adapter with a preferred memory allocation strategy, if supported. https://wgpu.rs/doc/wgpu/enum.MemoryHints.html
             trace: wgpu::Trace::Off,
         };
