@@ -11,3 +11,7 @@ The exercises will differ from the Learn WGPU tutorials, because we won't be wor
 [Exercise 2 - The Surface](./ex2_the_surface/README.md)
 
 [Exercise 2 - The Surface Challenge](./ex2_the_surface_challenge/README.md)
+
+[Exercise 3 - The Pipeline](./ex3_the_pipeline/README.md)
+
+[Exercise 3 - The Pipeline Challenge](./ex3_the_pipeline_challenge/README.md)
