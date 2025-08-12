@@ -1,7 +1,10 @@
-# Objective
+# Exercise 2 - The Surface - Challenge
+## Objective
 Modify the input() method to capture mouse events, and update the clear color using that. Hint: you'll probably need to use WindowEvent::CursorMoved.
 
 # Solution
+Tutorial Source Code - [Learn WGPU - Tutorial 2 Challenge](https://github.com/sotrh/learn-wgpu/blob/master/code/beginner/tutorial2-surface/src/challenge.rs)
+
 In order to accomplish this, we need to modify the state to:
   1. Store the mouse-adjustable color
   2. Provide an interface to modify the color

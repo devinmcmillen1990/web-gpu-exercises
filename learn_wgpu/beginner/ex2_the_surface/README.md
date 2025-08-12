@@ -1,12 +1,13 @@
-# Exercise 1 - Dependencies and the Window
-[Learn WGPU - The Surface](https://sotrh.github.io/learn-wgpu/beginner/tutorial2-surface/)
+# Exercise 2 = The Surface
+Tutorial Link - [Learn WGPU - The Surface](https://sotrh.github.io/learn-wgpu/beginner/tutorial2-surface/)
 
-[Learn WGPU - Tutorial 2](https://github.com/sotrh/learn-wgpu/tree/master/code/beginner/tutorial2-surface/)
+Tutorial Source Code - [Learn WGPU - Tutorial 2](https://github.com/sotrh/learn-wgpu/tree/master/code/beginner/tutorial2-surface/)
 
-# The Surface
+## The Surface
 The ```surface``` is the part of the window where we actually draw. In this exercise, we'll see how to create a surface, access its texture to get a view, then attach the view to the render pass for rendering on the window.
 
 Here's the SurfaceConfiguration that will hold the necessary details on how the surface creates its underlying surface textures.
+
 ```Rust
 let config = wgpu:: SurfaceConfiguration {
     // textures will be used to write to the screen
@@ -104,13 +105,14 @@ pub fn render(&mut self) -> Result<(), SurfaceError> {
 ```
 
 There is a lot of new stuff happening here. First, we are getting the view from the surface's texture. Next we created a Command Encoder, that will be used for generating the commands to run on the GPU. We then embed the view in the ```wgpu::RenderPassDescriptor``` under the color_attachments property.
-# Demo
+
+## Demo
 Executing a ```cargo build | cargo run``` will run the application rendering a blueish screen.
 ![alt text](.assets/ex2_final_output.png "Demo Final Output - Surface")
 
 Keybindings are the same from the previous exercise.
 
-# Challenge
+## Challenge
 Modify the input() method to capture mouse events, and update the clear color using that. Hint: you'll probably need to use WindowEvent::CursorMoved.
 
 [EX2 - The Surface - Challenge](../ex2_the_surface_challenge/README.md)
