@@ -106,7 +106,7 @@ pub fn render(&mut self) -> Result<(), SurfaceError> {
 There is a lot of new stuff happening here. First, we are getting the view from the surface's texture. Next we created a Command Encoder, that will be used for generating the commands to run on the GPU. We then embed the view in the ```wgpu::RenderPassDescriptor``` under the color_attachments property.
 # Demo
 Executing a ```cargo build | cargo run``` will run the application rendering a blueish screen.
-![alt text](.assets/ex1_final_output.png "Demo Final Output - Surface")
+![alt text](.assets/ex2_final_output.png "Demo Final Output - Surface")
 
 Keybindings are the same from the previous exercise.
 
