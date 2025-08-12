@@ -18,5 +18,6 @@ fn vs_main(@builtin(vertex_index) in_vertex_index: u32) -> VertexOutput {
 
 @fragment
 fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
+    // Uses different color in the fragment as the original render-pipeline
     return vec4<f32>(in.position, 0.5, 1.0);
 }

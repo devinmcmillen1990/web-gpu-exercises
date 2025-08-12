@@ -172,6 +172,7 @@ impl State {
             _ => {}
         }
     }
+    
     pub fn render(&mut self) -> Result<(), SurfaceError> {
         self.window.request_redraw();
 

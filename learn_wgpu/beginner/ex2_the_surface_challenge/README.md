@@ -23,6 +23,7 @@ pub struct State {
     mouse_adjustable_color: wgpu::Color,
 }
 ```
+
 Don't forget to set it in the ```new()``` method:
 ```Rust
 Ok(Self {
@@ -37,6 +38,7 @@ Ok(Self {
     mouse_adjustable_color: wgpu::Color::BLACK,
 })
 ```
+
 We need to set this in our RenderPass under the ```color_attachments``` attribute:
 ```Rust
 let _renderpass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
