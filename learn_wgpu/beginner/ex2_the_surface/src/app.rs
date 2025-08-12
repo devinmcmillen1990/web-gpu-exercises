@@ -34,6 +34,7 @@ impl ApplicationHandler for App {
             WindowEvent::RedrawRequested => {
                 match state.render() {
                     Ok(_) => {},
+                    // Reconfigure the surface if it's lost or outdated
                     Err(SurfaceError::Lost | SurfaceError::Outdated) => {
                         let size = state.window.inner_size();
                         state.resize(size.width, size.height);

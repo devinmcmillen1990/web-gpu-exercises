@@ -66,8 +66,10 @@ impl State {
             // defines how SurfaceTextures will be stored on the GPU
             format: surface_format,
 
+            // width of the Surface Texture (usually this is the width of the window)
             width: size.width,
 
+            // height of the Surface Texture (usually this is the height of the window)
             height: size.height,
 
             // uses wgpu::PresentMode enum, which determines how to sync the surface with the display

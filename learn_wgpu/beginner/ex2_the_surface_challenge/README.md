@@ -70,7 +70,9 @@ WindowEvent::CursorMoved { position, .. } => {
 },
 ```
 
-# Results
+# Demo
+Executing a ```cargo build | cargo run``` will run the application.
+
 As you move the cursor around the screen you should see it fade between colors depending on how you have the hande_mouse_move computation. Play around with it and see what else you can come up with.
 
 ### Cursor Top-Left
