@@ -43,6 +43,15 @@ impl ApplicationHandler for App {
                     },
                 }
             },
+            WindowEvent::CursorMoved { position, .. } => {
+                
+            },
+            // Add empty Mouse Button input events
+            WindowEvent::MouseInput { state, button, .. } => match (button, state.is_pressed()) {
+                (MouseButton::Left, true) => {}
+                (MouseButton::Left, false) => {}
+                _ => {}
+            },
             WindowEvent::KeyboardInput {
                 event: KeyEvent {
                     physical_key: PhysicalKey::Code(code),
