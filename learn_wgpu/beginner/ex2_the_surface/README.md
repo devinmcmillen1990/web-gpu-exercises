@@ -1,4 +1,4 @@
-# Exercise 2 = The Surface
+# Exercise 2 - The Surface
 Tutorial Link - [Learn WGPU - The Surface](https://sotrh.github.io/learn-wgpu/beginner/tutorial2-surface/)
 
 Tutorial Source Code - [Learn WGPU - Tutorial 2](https://github.com/sotrh/learn-wgpu/tree/master/code/beginner/tutorial2-surface/)
