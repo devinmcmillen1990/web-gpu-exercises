@@ -275,7 +275,7 @@ fn fs_main(
 ```
 
 ## Demo
-Executing a ```cargo build | cargo run``` will run the application rendering a blueish screen with a brown triangle in the center.
+Executing a ```cargo build | cargo run``` will run the application rendering a blueish screen with a rainbow triangle in the center.
 ![alt text](.assets/ex4a_final_output.png "Demo Final Output - Vertex Buffers")
 
 Keybindings are the same from the previous exercise.

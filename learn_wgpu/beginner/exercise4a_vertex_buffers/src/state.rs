@@ -172,8 +172,11 @@ impl State {
 
             // set the vertex buffer in the render method
             renderpass.set_vertex_buffer(
-                0,                              // what buffer slot to use for this vertex buffer (You can have multiple vertex buffers set at a time)
-                self.vertex_buffer.slice(..)    // is the slice of the buffer to use (We use .. to specify the entire buffer)
+                // what buffer slot to use for this vertex buffer (You can have multiple vertex buffers set at a time)
+                0,
+                
+                // is the slice of the buffer to use (We use .. to specify the entire buffer)
+                self.vertex_buffer.slice(..)
             );
 
             // use the vertex buffer in a draw call
