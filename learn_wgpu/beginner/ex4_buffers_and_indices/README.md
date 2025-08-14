@@ -7,8 +7,8 @@ Tutorial Source Code - [Learn WGPU - Tutorial 4](https://github.com/sotrh/learn-
 A buffer is a contiguous chunk of data on the GPU. Buffers can be used to store things like structs, arrays, graphs, trees, etc.
 
 [Vertex Buffer](./ex4a_vertex_buffers/README.md)
+
 [Index Buffer](./ex4b_index_buffers/README.md)
-## Demo
 
 ## Challenge
 Create a more complex shape than the one we made (aka. more than three triangles) using a vertex buffer and an index buffer. Toggle between the two with the space key.

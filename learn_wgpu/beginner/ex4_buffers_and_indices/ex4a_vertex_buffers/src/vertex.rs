@@ -79,7 +79,7 @@ impl Vertex {
                     // Float32x3 corresponds to vec3<f32> in shader code
                     format: wgpu::VertexFormat::Float32x3,
                 },
-            ] 
+            ],
         }
     }
 }
