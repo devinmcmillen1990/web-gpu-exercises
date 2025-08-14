@@ -2,7 +2,13 @@ use std::sync::Arc;
 use winit::event_loop::ActiveEventLoop;
 use winit::keyboard::KeyCode;
 use winit::window::Window;
+
+// Used to access the create_buffer_init method on wgpu::Device
+use wgpu::util::DeviceExt;
+
 use wgpu::SurfaceError;
+
+use crate::vertex::{ Vertex, VERTICES, };
 
 pub struct State {
     pub window: Arc<Window>,
@@ -12,6 +18,11 @@ pub struct State {
     config: wgpu::SurfaceConfiguration,
     is_surface_configured: bool,
     render_pipeline: wgpu::RenderPipeline,
+
+    // store vertex buffer because it is used during the rendering
+    vertex_buffer: wgpu::Buffer,
+    // store the number of vertices because it is used during the rendering
+    num_vertices: u32,
 }
 
 impl State {
@@ -48,13 +59,29 @@ impl State {
             bind_group_layouts: &[],
             push_constant_ranges: &[],
         });
+
+        // Create the vertex buffer
+        let vertex_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+            label: Some("Vertex Buffer"),
+
+            // store the buffer stored in VERTICES
+            // using bytemuck (opens new window)to cast our VERTICES as a &[u8]
+            contents: bytemuck::cast_slice(VERTICES),
+
+            // indicates that this buffer is a vertex buffer
+            usage: wgpu::BufferUsages::VERTEX,
+        });
+
         let render_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
             label: Some("Render Pipeline"),
             layout: Some(&render_pipeline_layout),
             vertex: wgpu::VertexState {
                 module: &shader,
                 entry_point: Some("vs_main"),
-                buffers: &[],
+                buffers: &[
+                    // Add the Buffer to the Render Pipeline Vertex State
+                    Vertex::desc(),
+                ],
                 compilation_options: wgpu::PipelineCompilationOptions::default(),
             },
             fragment: Some(wgpu::FragmentState {
@@ -94,6 +121,8 @@ impl State {
             config,
             is_surface_configured: false,
             render_pipeline,
+            vertex_buffer,
+            num_vertices: VERTICES.len() as u32,
         })
     }
 
@@ -146,7 +175,23 @@ impl State {
             });
 
             renderpass.set_pipeline(&self.render_pipeline);
-            renderpass.draw(0..3, 0..1);
+
+            // set the vertex buffer for the renderpass
+            renderpass.set_vertex_buffer(
+                // what buffer slot to use for this vertex buffer (You can have multiple vertex buffers set at a time)
+                0,
+                
+                // is the slice of the buffer to use (We use .. to specify the entire buffer)
+                self.vertex_buffer.slice(..)    
+            );
+
+            renderpass.draw(
+                // use the vertex buffer in a draw call
+                0..self.num_vertices,
+
+                // create one instance                   
+                0..1
+            );
         }
 
         self.queue.submit(std::iter::once(encoder.finish()));

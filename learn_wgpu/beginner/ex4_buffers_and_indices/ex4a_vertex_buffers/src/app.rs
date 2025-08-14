@@ -42,7 +42,7 @@ impl ApplicationHandler for App {
                     },
                 }
             },
-            WindowEvent::CursorMoved { position, .. } => {
+            WindowEvent::CursorMoved { .. } => {
             },
             WindowEvent::MouseInput { state, button, .. } => {
                 match (button, state.is_pressed()) {
