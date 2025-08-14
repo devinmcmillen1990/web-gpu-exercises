@@ -1,5 +1,5 @@
 [package]
-name = "ex4b_index_buffers"
+name = "ex4_buffers_and_indices_challenge"
 version = "0.1.0"
 edition = "2018"
 

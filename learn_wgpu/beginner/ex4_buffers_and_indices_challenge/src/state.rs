@@ -16,11 +16,7 @@ pub struct State {
     is_surface_configured: bool,
     render_pipeline: wgpu::RenderPipeline,
     vertex_buffer: wgpu::Buffer,
-
-    // Store index buffer because it is used during the rendering
     index_buffer: wgpu::Buffer,
-
-    // Store number of indices because it is used during the rendering
     num_indices: u32,
 }
 
@@ -63,14 +59,11 @@ impl State {
             contents: bytemuck::cast_slice(VERTICES),
             usage: wgpu::BufferUsages::VERTEX,
         });
-
-        // Create the index buffer
         let index_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
             label: Some("Vertex Index Buffer"),
             contents: bytemuck::cast_slice(VERTEX_INDICES),
             usage: wgpu::BufferUsages::INDEX,
         });
-
         let render_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
             label: Some("Render Pipeline"),
             layout: Some(&render_pipeline_layout),
@@ -175,22 +168,8 @@ impl State {
 
             renderpass.set_pipeline(&self.render_pipeline);
             renderpass.set_vertex_buffer(0, self.vertex_buffer.slice(..));
-
-            // set the index buffer for the renderpass
-            renderpass.set_index_buffer(
-                // is the slice of the buffer to use (We use .. to specify the entire buffer)
-                self.index_buffer.slice(..),
-
-                // &[u16]
-                wgpu::IndexFormat::Uint16
-            );
-
-            // When using an index buffer, you need to use draw_indexed because the draw method ignores the index buffer
-            renderpass.draw_indexed(
-                0..self.num_indices, 
-                0, 
-                0..1
-            );
+            renderpass.set_index_buffer(self.index_buffer.slice(..), wgpu::IndexFormat::Uint16);
+            renderpass.draw_indexed(0..self.num_indices, 0, 0..1);
         }
 
         self.queue.submit(std::iter::once(encoder.finish()));

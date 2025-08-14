@@ -63,6 +63,35 @@ Let's do some cost-savings analysis now. Now ```VERTICES``` takes up about <u><s
 
 Now that we have our ```VERTEX_INDICES``` we need to incorporate these into our ```State```. 
 
+In our ```State::new``` method we'll add this under our ```vertex_buffer``` initialization logic:
+```Rust
+// Create the index buffer
+let index_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+    label: Some("Vertex Index Buffer"),
+    contents: bytemuck::cast_slice(VERTEX_INDICES),
+    usage: wgpu::BufferUsages::INDEX,
+});
+```
+
+Now that we have the buffer initialized, we need to use it in the Render Pipeline:
+```Rust
+// set the index buffer for the renderpass
+renderpass.set_index_buffer(
+    // is the slice of the buffer to use (We use .. to specify the entire buffer)
+    self.index_buffer.slice(..),
+
+    // &[u16]
+    wgpu::IndexFormat::Uint16
+);
+
+// When using an index buffer, you need to use draw_indexed because the draw method ignores the index buffer
+renderpass.draw_indexed(
+    0..self.num_indices, 
+    0, 
+    0..1
+);
+```
+
 ## Demo
 Executing a ```cargo build | cargo run``` will run the application rendering a blueish screen with the magenta pentagon from above in the center.
 ![alt text](.assets/ex4b_final_output.png "Demo Final Output - Index Buffers")
@@ -72,4 +101,4 @@ Keybindings are the same from the previous exercise.
 ## Challenge
 Create a more complex shape than the one we made (aka. more than three triangles) using a vertex buffer and an index buffer. Toggle between the two with the space key.
 
-[EX4 - Buffers and Indices - Challenge](../ex4b_index_buffers/README.md)
+[EX4 - Buffers and Indices - Challenge](../../ex4_buffers_and_indices_challenge/README.md)

@@ -186,7 +186,7 @@ impl State {
             );
 
             renderpass.draw(
-                // use the vertex buffer in a draw call
+                // use the number of vertices instead of magic number
                 0..self.num_vertices,
 
                 // create one instance                   
