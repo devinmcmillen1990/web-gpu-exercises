@@ -11,3 +11,10 @@ log = "0.4"
 wgpu = "26"
 pollster = "0.4"
 bytemuck = "1.23"
+
+# Use image crate to load our Happy Tree image
+# The jpeg decoder that image includes uses rayon (opens new window)to speed up the decoding with threads
+[dependencies.image]
+version = "0.25"
+default-features = false
+features = ["png", "jpeg"]

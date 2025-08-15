@@ -4,6 +4,13 @@ Tutorial Link - [Learn WGPU - Textures and Buffers](https://sotrh.github.io/lear
 Tutorial Source Code - [Learn WGPU - Tutorial 5](https://github.com/sotrh/learn-wgpu/tree/master/code/beginner/tutorial5-textures/)
 
 ## Textures
+<strong>Textures</strong> are images overlaid on a triangle mesh. There are multiple types of textures, including:
+  - normal maps
+  - bump maps
+  - specular maps
+  - diffuse maps
+
+
 
 ## Bind Groups
 
