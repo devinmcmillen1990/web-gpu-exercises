@@ -140,7 +140,7 @@ impl State {
             usage: wgpu::BufferUsages::INDEX,
         });
 
-        let challenge_use_complex = false;
+        let challenge_use_complex = true;
 
         let render_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
             label: Some("Render Pipeline"),
