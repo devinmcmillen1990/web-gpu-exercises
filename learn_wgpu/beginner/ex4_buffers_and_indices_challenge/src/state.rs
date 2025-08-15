@@ -73,8 +73,6 @@ impl State {
             usage: wgpu::BufferUsages::INDEX,
         });
 
-        // For our complex shape we'll follow the challenge 
-
         // represents the points spaced uniformly around a circle (16-gon)
         let num_vertices = 16;
 
@@ -128,19 +126,22 @@ impl State {
 
         let challenge_num_indices = challenge_indices.len() as u32;
 
+        // create the challenge vertex buffer
         let challenge_vertex_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
             label: Some("Challenge Vertex Buffer"),
             contents: bytemuck::cast_slice(&challenge_vertices),
             usage: wgpu::BufferUsages::VERTEX,
         });
 
+        // create the challenge vertex index buffer
         let challenge_index_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
             label: Some("Challenge Index Buffer"),
             contents: bytemuck::cast_slice(&challenge_indices),
             usage: wgpu::BufferUsages::INDEX,
         });
 
-        let challenge_use_complex = true;
+        // default to show pentagon when SPACE is not pressed
+        let challenge_use_complex = false;
 
         let render_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
             label: Some("Render Pipeline"),
@@ -194,6 +195,7 @@ impl State {
             index_buffer,
             num_indices: VERTEX_INDICES.len() as u32,
 
+            // Register with the state to use during rendering
             challenge_vertex_buffer,
             challenge_index_buffer,
             challenge_num_indices,
@@ -212,7 +214,9 @@ impl State {
 
     pub fn handle_key(&mut self, event_loop: &ActiveEventLoop, code: KeyCode, is_pressed: bool) {
         match (code, is_pressed) {
+            // Add block for handling SPACE bar press
             (KeyCode::Space, pressed) => {
+                // toggle challenge_use_complex flag that will swap the vertex buffers during rendering
                 self.challenge_use_complex = pressed;
             },
             (KeyCode::Escape, true) => {
@@ -269,6 +273,7 @@ impl State {
                 )
             };
 
+            // apply the dynamic buffers
             renderpass.set_vertex_buffer(0, data.0.slice(..));
             renderpass.set_index_buffer(data.1.slice(..), wgpu::IndexFormat::Uint16);
             renderpass.draw_indexed(0..data.2, 0, 0..1);
